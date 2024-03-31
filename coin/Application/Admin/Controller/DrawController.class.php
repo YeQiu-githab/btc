@@ -58,7 +58,7 @@ class DrawController extends AdminController
 			krsort($setting);
 
 			foreach ($setting as $item) {
-				if ($item['amount']<$recharge['amount']) {
+				if ($item['amount']<=$recharge['amount']) {
 					$draw_num=$item['num'];break;
 				}
 			}
