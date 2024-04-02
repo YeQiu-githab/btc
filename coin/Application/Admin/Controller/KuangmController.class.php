@@ -185,7 +185,8 @@ class KuangmController extends AdminController
 	        $data['content'] = trim($_POST['content']);
 	        $data['imgs'] = trim($_POST['imgs']); 
 	        $data['dayoutnum'] = trim($_POST['dayoutnum']); 
-	        $data['outtype'] = trim($_POST['outtype']); 
+	        $data['max_dayoutnum'] = trim($_POST['max_dayoutnum']);
+	        $data['outtype'] = trim($_POST['outtype']);
 	        $data['outcoin'] = trim($_POST['outcoin']); 
 	        $data['pricenum'] = trim($_POST['pricenum']); 
 	        $data['pricecoin'] = trim($_POST['pricecoin']); 

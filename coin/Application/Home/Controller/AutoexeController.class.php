@@ -395,10 +395,12 @@ class AutoexeController extends \Think\Controller
 	           $minfo = M("user_coin")->where(array('userid'=>$uid))->find();
 	           $kid = $vo['kid'];
 	           $nowdate = date("Y-m-d",time());
+//	           var_dump($uid);
 	           $profitinfo = M("kjprofit")->where(array('uid'=>$uid,'kid'=>$id,'day'=>$nowdate))->find();
+//            var_dump($vo);
 	           if(empty($profitinfo)){
                     // 服务费
-                   $kjInfo=M('kuangji')->field('id,title,service_charge')->where(['id'=>$vo['kid']])->find();
+                   $kjInfo=M('kuangji')->field('id,title,service_charge,max_dayoutnum,dayoutnum')->where(['id'=>$vo['kid']])->find();
                    $service_charge=0;
                    if ($kjInfo && $kjInfo['service_charge']) {
                        $service_charge=$kjInfo['service_charge']/100;
@@ -419,8 +421,15 @@ class AutoexeController extends \Think\Controller
                        $tcoinnum = sprintf("%.6f",($outnum / $newprice)); //实际产生的币量，保留6位小数
 	               }elseif($outtype == 2){
 	                   $coinname = strtolower(trim($vo['outcoin']));
-	                   $tcoinnum = $vo['outnum'];
+                       //	  $tcoinnum = $vo['outnum'];
+                       $min=$this->interceptStr($kjInfo['dayoutnum']);
+                       $max=$this->interceptStr($kjInfo['max_dayoutnum']);
+                       $chuNum=strlen($min);
+                       $rand_num=mt_rand(intval($min),intval($max));
+                       $beishu=$this->makeChu($chuNum);
+                       $tcoinnum=$rand_num/$beishu;
 	               }
+
                    $services=sprintf("%.6f",($tcoinnum*$service_charge));// 服务费
                    $tcoinnum=sprintf("%.6f",$tcoinnum-$services); // 扣除手续费
 	               $djout = $vo['djout'];//1、不冻结/2、冻结
@@ -506,7 +515,32 @@ class AutoexeController extends \Think\Controller
 	       echo "++||没有正常运行的矿机||++";
 	   }
 	}
-	
+
+    /**
+     * 截取小数点后的字符串
+     * @param $str
+     * @return mixed|string
+     */
+	public function interceptStr($str){
+        $parts = explode('.', $str);
+        $extension = end($parts);
+        return $extension;
+    }
+
+    /**
+     * 1的 多少個10倍數
+     * @param $num
+     * @return int
+     */
+    public function makeChu($num){
+        $string=1;
+	    for($i=1;$i<=$num;$i++){
+
+	        $string *= 10;
+        }
+	    return $string;
+    }
+
 	//休验订单自动按风控比例设置订单的盈亏比例
 	//设置成5-10秒执行一次的计划任务
 	public function setwl_ty(){

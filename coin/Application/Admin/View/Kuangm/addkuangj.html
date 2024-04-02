@@ -114,14 +114,16 @@
 
 								<tr class="controls">
 									<td class="item-label">日产量 :</td>
-									<td style="width:300px;">
-										<select type="text" class="form-control" style="width:140px;float:left;" name="outtype" >
+									<td style="width:350px;">
+										<select type="text" class="form-control" style="width:95px;float:left;" name="outtype" >
 										    <option value="1" <if condition="$data.outtype eq 1">selected</if>>按产值</option>
 										    <option value="2" <if condition="$data.outtype eq 2">selected</if>>按币量</option>
 										</select>
-										<input type="text" class="form-control" style="width:140px;float:left;margin-left:20px;" name="dayoutnum" value="{$data['dayoutnum']}">
+										<input type="text" class="form-control" style="width:90px;float:left;margin-left:20px;" name="dayoutnum" value="{$data['dayoutnum']}">
+										<span>~</span>
+										<input type="text" class="form-control" style="width:90px;" name="max_dayoutnum" value="{$data['max_dayoutnum']}">
 									</td>
-									<td class="item-note" style="color:red;">*按产值是按USDT折合产值，产出币量随价格波动，按币量则是定量</td>
+									<td class="item-note" style="color:red;">*按产值是按USDT折合产值，产出币量随价格波动，按币量则是定量 者需要设置区间<span style="color:blue">注意 小数点后位数一样长不够用0补</span></td>
 								</tr>
 								
 								
