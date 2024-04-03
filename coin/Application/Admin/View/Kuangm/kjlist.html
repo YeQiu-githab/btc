@@ -13,6 +13,7 @@
 		</div>
 		<div class="cf">
 			<div class="fl">
+				<a class="btn btn-success " href="{:U('Kuangm/setKjUser')}">赠送矿机</a>
 				<button class="btn ajax-post btn-info " url="{:U('Kuangm/userkjStatus',array('type'=>'1','mobile'=>'Admin'))}" target-form="ids">启动收益</button>
 				<button class="btn ajax-post btn-warning " url="{:U('Kuangm/userkjStatus',array('type'=>'2','mobile'=>'Admin'))}" target-form="ids">禁止收益</button>
 				<button class="btn ajax-post confirm btn-danger " confirm-msg="批量删除不可恢复,确定删除?" url="{:U('Kuangm/userkjStatus',array('type'=>'3','mobile'=>'Admin'))}" target-form="ids">删除矿机</button>

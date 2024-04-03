@@ -277,8 +277,90 @@ class KuangmController extends AdminController
 			exit();
 		}
 	}
-	
 
+    //添加矿机页面
+    public function setKjUser(){
+        if($_POST){
+            $id = trim(I('post.id'));
+            $content= trim(I('post.content'));
+            if (!$id) {
+                $this->error("参数丢失");exit();
+            }
+            if (!$content) {
+                $this->error("uid 不能为空！");exit();
+            }
+
+            if(strpos($content,'；') !=false || strpos($content,':') !=false || strpos($content,'：') !=false ){
+
+                $this->error("uid设置格式不正确！");exit();
+            }
+
+
+            $uids=explode(";",$content);
+            $minfo = M("kuangji")->where(array('id'=>$id))->find();
+            $stats=0;
+            if (!empty($uids)) {
+                foreach ($uids as $vo) {
+                    $uinfo = M("user")->where(array('id' => $vo))->field("id")->find();
+                    if (!$uinfo) {
+                        $stats=1;
+                        break;
+                    }
+                }
+                if ( $stats == 1) {
+                    $this->error("请检测Uid是否存在改用户");exit();
+                }
+                foreach ($uids as $vo) {
+                    $uinfo = M("user")->where(array('id'=>$vo))->field("id,username,rzstatus")->find();
+
+                    //建仓矿机订单数据
+                    if($minfo['outtype'] == 1){//按产值收益
+                        $odate['outnum'] = '';
+                        $odate['outusdt'] = $minfo['dayoutnum'];
+                    }elseif($minfo['outtype'] == 2){//按币量收益
+                        $odate['outnum'] = $minfo['dayoutnum'];
+                        $odate['outusdt'] = '';
+                    }
+                    $odate['djout'] = $minfo['djout'];
+                    if($minfo['djout'] == 2){
+                        $odate['djnum'] = $minfo['djday'];
+                    }else{
+                        $odate['djnum'] = $minfo['djday'];
+                    }
+                    $odate['kid'] = $minfo['id'];
+                    $odate['type'] = 1;
+                    $odate['sharebl'] = '';
+                    $odate['sharebl'] = '';
+                    $odate['uid'] = $vo;
+                    $odate['username'] = $uinfo['username'];
+                    $odate['kjtitle'] = $minfo['title'];
+                    $odate['imgs'] = $minfo['imgs'];
+                    $odate['status'] = 1;
+                    $odate['cycle'] = $minfo['cycle'];
+                    $odate['synum'] = $minfo['cycle'];
+                    $odate['outtype'] = $minfo['outtype'];
+                    $odate['outcoin'] = $minfo['outcoin'];
+                    $odate['addtime'] = date("Y-m-d H:i:s",time());
+                    $odate['endtime'] = date("Y-m-d H:i:s",(time() + 86400 * $minfo['cycle']));
+                    $odate['intaddtime'] = time();
+                    $odate['intendtime'] = time() + 86400 * $minfo['cycle'];
+                    $adre = M("kjorder")->add($odate);
+                }
+            }
+            $this->success("赠送矿机成功");exit();
+        }else{
+            $list = M("kuangji")->where(array('status'=>1))->field("id,title,status")->order('id desc')->select();
+            $data = array();
+            foreach($list as $k=>$v){
+                $data[$k]['id'] = $v['id'];
+                $data[$k]['title'] = trim($v['title']);
+                $data[$k]['status'] = $v['status'];
+            }
+            $this->assign('kuangji',$data);
+        }
+
+        $this->display();
+    }
 
 }
 ?>
